@@ -1,8 +1,13 @@
-import Counter from './components/counter/Counter';
+//import Counter from './components/counter/Counter';
+import TodoInsert from './components/todo/TodoInsert';
+import TodoList from './components/todo/TodoList';
 
 function App() {
   return (
-    <Counter></Counter>
+    <>
+      <TodoInsert />
+      <TodoList />
+    </>
   );
 }
 
