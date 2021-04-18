@@ -1,16 +1,8 @@
-interface CounterProps { 
-  count: number,
-  onIncrease: () => void,
-  onDecrease: () => void,
-  onIncreaseBy: (diff: number) => void
-}
+import useCounter from '../../hooks/useCounter';
 
-const CounterPresenter = ({
-  count,
-  onIncrease,
-  onDecrease,
-  onIncreaseBy
-}: CounterProps) => {
+const CounterPresenter = () => {
+  const {count, onIncrease, onDecrease, onIncreaseBy} = useCounter();
+
   return (
     <div>
       <h1>{count}</h1>
