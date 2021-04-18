@@ -1,5 +1,5 @@
 import './TodoItem.css';
-import {Todo} from '../../modules/todos';
+import {Todo} from '../../modules/todosBefore';
 import useTodoActions from '../../hooks/useTodoAction';
 
 interface TodoItemProps {

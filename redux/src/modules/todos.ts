@@ -1,31 +1,20 @@
-// 1.1. 액션
-const ADD_TODO = 'todos/ADD_TODO' as const;
-const TOGGLE_TODO = 'todos/TOGGLE_TODO' as const;
-const REMOVE_TODO = 'todos/REMOVE_TODO' as const;
+import {ActionType, createAction, createReducer} from 'typesafe-actions';
 
-// 1.2. 액션 선언 함수
-export const addTodo = (text: string) => ({
-  type: ADD_TODO,
-  payload: text
-});
+// 액션 타입 선언
+const ADD_TODO = 'todos/ADD_TODO';
+const TOGGLE_TODO = 'todos/TOGGLE_TODO';
+const REMOVE_TODO = 'todos/REMOVE_TODO';
 
-export const toggleTodo = (id: number) => ({
-  type: TOGGLE_TODO,
-  payload: id
-});
+// 액션 생성 함수
+export const addTodo = createAction(ADD_TODO)<string>();
+export const toggleTodo = createAction(TOGGLE_TODO)<number>();
+export const removeTodo = createAction(REMOVE_TODO)<number>();
 
-export const removeTodo = (id: number) => ({
-  type: REMOVE_TODO,
-  payload: id
-});
+// 액션들의 타입 묶기
+const actions = {addTodo, toggleTodo, removeTodo};
+type TodosAction = ActionType<typeof actions>;
 
-// 1.3. 액션들을 위한 타입 준비
-type TodosActions = 
-  | ReturnType<typeof addTodo>
-  | ReturnType<typeof toggleTodo>
-  | ReturnType<typeof removeTodo>;
-
-// 2.1. state 선언
+// state 선언
 export type Todo = {
   id: number;
   text: string;
@@ -34,33 +23,23 @@ export type Todo = {
 
 type TodosState = Todo[];
 
-// 2.2. 초기 값 선언
+// 초기 값 선언
 const initialState: TodosState = [
   { id: 1, text: '상태 관리 패키지 비교해보기!', done: true},
   { id: 2, text: '과제 진행 하기', done: false},
 ];
 
-// 3.1. 리듀서 구현
-const todos = (state: TodosState = initialState, action: TodosActions):TodosState => {
-  switch(action.type){
-    case ADD_TODO:
-      const nextId = Math.max(...state.map(todo => todo.id)) + 1;
-      return state.concat({
-        id: nextId,
-        text: action.payload,
-        done: false
-      });
-    case TOGGLE_TODO:
-      return state.map(todo => 
-          todo.id === action.payload ? { ...todo, done: !todo.done} : todo
-        );
-    case REMOVE_TODO:
-      return state.filter(todo => todo.id !== action.payload);
-    default:
-      return state;
-  }
-};
+// Reducer 생성
+const todos = createReducer<TodosState, TodosAction>(initialState, {
+  [ADD_TODO]: (state, {payload:text}) => state.concat({
+    id: Math.max(...state.map(todo => todo.id)) + 1,
+    text,
+    done: false
+  }),
+  [TOGGLE_TODO]: (state, {payload: id}) => 
+    state.map(todo => (todo.id === id ? { ...todo, done: !todo.done} : todo)),
+  [REMOVE_TODO]: (state, {payload: id}) => 
+    state.filter(todo => todo.id !== id)
+})
 
 export default todos;
-
-  
